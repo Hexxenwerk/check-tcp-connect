@@ -1,4 +1,5 @@
 import socket
+import sys
 
 
 def tcp_connect(host: str, port: int):
@@ -18,8 +19,29 @@ def tcp_connect(host: str, port: int):
         return 2
 
 
+def targets_from_arguments():
+    targets: list = []
+    for target in sys.argv[1:]:
+        host, port = target.split(":")
+        try:
+            targets.append({
+                "host": host,
+                "port": int(port)
+            })
+        except ValueError:
+            print(f'Port must be numeric: {port}')
+            continue
+    return targets
+
+
 def main():
-    exit(tcp_connect("www.heise.de", 89))
+    exit_code = 0
+    targets = targets_from_arguments()
+    for target in targets:
+        rc: int = tcp_connect(target["host"], target["port"])
+        if rc > exit_code:
+            exit_code = rc
+    sys.exit(exit_code)
 
 
 if __name__ == '__main__':
