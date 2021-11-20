@@ -4,8 +4,7 @@ import sys
 
 def tcp_connect(target: dict):
     try:
-        with socket.socket() as s:
-            s.connect((target["host"], target["port"]))
+        socket.create_connection((target["host"], target["port"]), 30)
         print(f'Connection to {target["host"]} port {target["port"]} successful')
         return 0
     except TimeoutError:
