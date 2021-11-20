@@ -2,19 +2,19 @@ import socket
 import sys
 
 
-def tcp_connect(target: dict):
+def tcp_connect(host: str, port: int):
     try:
-        socket.create_connection((target["host"], target["port"]), 30)
-        print(f'Connection to {target["host"]} port {target["port"]} successful')
+        socket.create_connection((host, port), 20)
+        print(f'Connection to {host} port {port} successful')
         return 0
     except TimeoutError:
-        print(f'Connection to {target["host"]} port {target["port"]} timed out')
+        print(f'Connection to {host} port {port} timed out')
         return 3
     except ConnectionRefusedError:
-        print(f'Connection to {target["host"]} port {target["port"]} refused')
+        print(f'Connection to {host} port {port} refused')
         return 2
     except socket.error as e:
-        print(f'Connection to {target["host"]} port {target["port"]} failed: {e}')
+        print(f'Connection to {host} port {port} failed: {e}')
         return 2
 
 
@@ -41,7 +41,7 @@ def main():
     exit_code = 0
     targets = targets_from_arguments()
     for target in targets:
-        rc: int = tcp_connect(target)
+        rc: int = tcp_connect(target["host"], target["port"])
         if rc > exit_code:
             exit_code = rc
     sys.exit(exit_code)
